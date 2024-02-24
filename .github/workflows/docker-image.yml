@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: ["deploy"]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env file
+        # the API route is not a secret, but if it was we would have used github secrets
+        run: echo "REACT_APP_api_route='https://mirinterbase.cs.bgu.ac.il/api'" | out-file .env -encoding ASCII
+
+      - run: ls
+
+      - name: install dependencies
+        run: npm install
+
+      - name: build
+        run: npm run build
+
+      - name: deploy
+        run: Copy-Item -Path ./build/* -Destination "C:\Program Files\sise.micro-message-rna-project\fe\sise.micro-rna-m-rna-targets-interactions.frontend\deploy" -Recurse -Force
